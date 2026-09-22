@@ -1,0 +1,25 @@
+.game-header { margin: 31px 0 0; }
+.key-art { position: relative; min-height: 490px; display: flex; flex-direction: column; justify-content: flex-end; padding: 52px; overflow: hidden; border: 1px solid var(--line); background: radial-gradient(circle at 78% 29%, #e8f6a9 0 2%, #d5f36b 2.3% 4.4%, rgba(213,243,107,.22) 4.7% 13%, transparent 13.4%), radial-gradient(ellipse at 72% 69%, #42695a 0 12%, transparent 35%), linear-gradient(122deg, #0c1613 0%, #172a25 45%, #314d43 100%); }
+.key-art::before { position: absolute; content: ""; width: 570px; height: 570px; right: -130px; bottom: -340px; border: 44px solid rgba(213,243,107,.8); border-radius: 50%; transform: rotate(-20deg); }
+.key-art::after { position: absolute; content: ""; inset: 0; opacity: .5; background: repeating-linear-gradient(112deg, transparent 0 55px, rgba(213,243,107,.12) 56px 57px); }
+.key-art > * { position: relative; z-index: 1; }
+.key-art .eyebrow { margin: 0 0 16px; color: var(--accent); }
+.key-art-kicker { margin: 0 0 12px; color: #bfcec5; font: 11px "DM Mono", monospace; letter-spacing: .11em; }
+.key-art h1 { max-width: none; font-size: clamp(78px, 12vw, 148px); }
+.key-art > p:last-child { margin: 20px 0 0; color: var(--ink); font-size: 16px; }
+.media-gallery { padding: 27px 0 8px; }
+.media-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+.media-heading .eyebrow, .media-heading span { margin: 0; color: var(--muted); font: 11px "DM Mono", monospace; }
+.media-strip { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(202px, 1fr); grid-template-rows: 140px; gap: 12px; overflow-x: auto; padding-bottom: 12px; scrollbar-color: var(--accent) transparent; }
+.media-tile { position: relative; min-width: 0; margin: 0; overflow: hidden; border: 1px solid var(--line); color: var(--ink); background-color: #203d35; }
+.media-tile::after { position: absolute; content: ""; inset: 0; background: linear-gradient(to top, rgba(5,12,10,.82), transparent 58%); pointer-events: none; }
+.media-tile figcaption, .trailer strong, .trailer small, .play-icon { position: absolute; z-index: 1; }
+.media-tile figcaption, .trailer strong, .trailer small { bottom: 12px; left: 13px; font: 10px "DM Mono", monospace; letter-spacing: .04em; }
+.trailer { border: 0; text-align: left; cursor: pointer; background: radial-gradient(circle at 65% 43%, #d5f36b 0 4%, transparent 4.5%), linear-gradient(135deg, #314d43, #0d1714 64%); }
+.trailer:hover .play-icon { transform: scale(1.08); }
+.play-icon { top: 38px; left: 50%; display: grid; width: 51px; height: 51px; place-items: center; border: 1px solid rgba(213,243,107,.8); border-radius: 50%; color: var(--accent); background: rgba(16,27,23,.45); transform: translateX(-50%); transition: transform .2s; }
+.trailer strong { color: var(--ink); }
+.trailer small { right: 13px; left: auto; color: var(--accent); }
+.screenshot { background-image: linear-gradient(135deg, rgba(213,243,107,.1), transparent 58%), linear-gradient(transparent 68%, rgba(0,0,0,.48)), repeating-linear-gradient(112deg, transparent 0 32px, rgba(213,243,107,.11) 33px 34px); }
+.cockpit { background-color: #254750; }.planet { background-color: #70455b; }.city { background-color: #352657; }.warp { background-color: #193e50; }.desert { background-color: #785f3a; }.orbital { background-color: #365149; }.battle { background-color: #502939; }.station { background-color: #253c48; }
+@media (max-width: 780px) { .game-header { margin-top: 22px; }.key-art { min-height: 380px; padding: 30px 26px; }.media-strip { grid-auto-columns: 78%; } }

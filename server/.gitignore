@@ -1,2 +1,14 @@
+# Dependencies
 node_modules/
+
+# Build outputs
+dist/
+.vercel
+
+# Environment variables
 .env
+.env.*.local
+
+# Uploads
+uploads/*/*
+!uploads/**/.gitkeep

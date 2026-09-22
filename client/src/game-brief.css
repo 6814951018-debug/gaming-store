@@ -1,0 +1,50 @@
+.game-brief {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  margin: 18px 0 0;
+  border: 1px solid var(--line);
+  background: rgba(16, 27, 23, 0.45);
+}
+
+.capsule-art {
+  position: relative;
+  min-height: 390px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 42px;
+  overflow: hidden;
+  color: var(--ink);
+  background: radial-gradient(circle at 78% 20%, #d5f36b 0 5%, transparent 5.5%), radial-gradient(circle at 79% 21%, transparent 0 22%, rgba(213, 243, 107, 0.25) 22.5% 29%, transparent 29.5%), linear-gradient(135deg, #42695a 0%, #192c28 52%, #0d1714 100%);
+}
+
+.capsule-art::after {
+  position: absolute;
+  content: "";
+  inset: 0;
+  opacity: 0.35;
+  background: repeating-linear-gradient(116deg, transparent 0 38px, rgba(213, 243, 107, 0.24) 39px 40px);
+}
+
+.capsule-art span, .capsule-art strong, .capsule-art small { position: relative; z-index: 1; }
+.capsule-art span, .capsule-art small { font: 11px "DM Mono", monospace; letter-spacing: .08em; }
+.capsule-art span { color: var(--accent); }
+.capsule-art strong { margin: 9px 0 10px; font-size: clamp(58px, 8vw, 96px); line-height: .77; letter-spacing: -.09em; }
+.capsule-art small { color: #bfcec5; }
+
+.brief-summary { padding: 38px 34px; border-left: 1px solid var(--line); }
+.brief-summary .eyebrow { margin: 0 0 16px; color: var(--accent); }
+.brief-summary h2 { font-size: 32px; letter-spacing: -.05em; }
+.brief-description { margin: 16px 0 30px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+.brief-facts { display: grid; gap: 17px; margin: 0; }
+.brief-facts div { padding-top: 15px; border-top: 1px solid var(--line); }
+.brief-facts dt { color: var(--muted); font: 11px "DM Mono", monospace; }
+.brief-facts dd { margin: 7px 0 0; color: var(--ink); font-size: 14px; }
+.tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+.tag-list span { padding: 7px 10px; border: 1px solid var(--line); color: var(--accent); font: 11px "DM Mono", monospace; }
+
+@media (max-width: 780px) {
+  .game-brief { grid-template-columns: 1fr; }
+  .capsule-art { min-height: 300px; padding: 28px; }
+  .brief-summary { padding: 30px 26px; border-top: 1px solid var(--line); border-left: 0; }
+}

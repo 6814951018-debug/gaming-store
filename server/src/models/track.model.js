@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const trackSchema = new mongoose.Schema(
     {
         title: { type: String, required: true, trim: true },

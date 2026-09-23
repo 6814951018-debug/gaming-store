@@ -1,6 +1,10 @@
 {
-  "name": "portable-track",
+  "name": "gaming-store",
   "private": true,
+  "scripts": {
+    "install-deps": "npm install --prefix server && npm install --prefix client",
+    "build": "npm run install-deps && npm run build --prefix client"
+  },
   "engines": {
     "node": "24.x"
   }

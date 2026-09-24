@@ -17,8 +17,6 @@ const eldenRing = {
     gameplayDescription: "Read enemy patterns, choose when to attack, and build your own strategy around timing, positioning, equipment, and exploration. The open world lets you leave a difficult encounter and return with a new approach.",
     storyHighlights: "The Tarnished returns to the Lands Between after the shattering of the Elden Ring. Follow the guidance of grace, uncover the ambitions of the demigods, and decide what the next age will become.",
     mediaUrl: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1245620/library_hero.jpg",
-    previewUrl: "https://video.akamai.steamstatic.com/store_trailers/1245620/468143/7a6be00f78fb0fd8b419e92cea72cc4a19ec45f8/1750650501/hls_264_master.m3u8?t=1716311566",
-    previewPoster: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256889452/movie.293x165.jpg?t=1716311566",
     imageUrl: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1245620/library_600x900.jpg",
     maturityWarning: "Fantasy violence, blood and gore, disturbing imagery, and mature themes.",
     systemRequirements: {

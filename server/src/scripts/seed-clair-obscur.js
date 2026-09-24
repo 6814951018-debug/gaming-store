@@ -17,8 +17,6 @@ const gameData = {
     gameplayDescription: "Plan every turn with attacks, skills, and status effects, then react in real time with perfectly timed dodges, parries, and counters. Explore branching paths, upgrade your gear, and combine party abilities to overcome impossible odds.",
     storyHighlights: "Follow Gustave, Maelle, and the other members of Expedition 33 as they cross the continent in search of the Paintress. Their final journey is a story about memory, sacrifice, and the meaning of one more year.",
     mediaUrl: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1903340/library_hero.jpg",
-    previewUrl: "https://video.akamai.steamstatic.com/store_trailers/1903340/876247/5c4709c3a98d932003a6b85bd5e4bfcd6a777e7a/1748581603/hls_264_master.m3u8?t=1745478082",
-    previewPoster: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/257129803/movie_600x337.jpg?t=1745478082",
     imageUrl: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1903340/library_600x900.jpg",
     maturityWarning: "Fantasy violence, blood, mature themes, and disturbing imagery.",
     systemRequirements: {

@@ -9,7 +9,9 @@ const connectDB = async () => {
 
     const mongoUri = process.env.MONGO_URI;
     if (!mongoUri) {
-        throw new Error("MONGO_URI is missing. Set the MongoDB Atlas connection string in the environment.");
+        console.warn("MONGO_URI is missing. Starting without MongoDB; local demo catalogue will be served instead.");
+        cachedConnection = true;
+        return cachedConnection;
     }
 
     try {

@@ -2,8 +2,8 @@ import "./styles.css";
 import "./game-brief.css";
 import "./media-banner.css";
 import "./storefront-polish.css";
+import { API_URL } from "./api.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 const app = document.querySelector("#app");
 let mode = "login";
 let currentUser = null;

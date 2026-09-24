@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Prompt:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-@theme { --font-display: "Space Grotesk", sans-serif; --font-body: "Prompt", sans-serif; --font-mono: "DM Mono", monospace; --color-ink: #f4efff; --color-moss: #09070f; --color-lime: #c084fc; --color-muted: #a79bbd; }
-@layer base { * { box-sizing: border-box; } html { scroll-behavior: smooth; } body { @apply m-0 min-w-80 bg-moss font-body text-ink; background-image: radial-gradient(circle at 12% 14%, #29133f 0, transparent 30%), radial-gradient(circle at 90% 86%, #241735 0, transparent 27%); } h1, h2, h3 { @apply font-display font-bold; } button, input, select { font: inherit; } button { cursor: pointer; } del { opacity: .62; text-decoration-thickness: 2px; } }
+@theme { --font-display: "Space Grotesk", sans-serif; --font-body: "Prompt", sans-serif; --font-mono: "DM Mono", monospace; --color-ink: #ececf0; --color-moss: #101116; --color-lime: #b6ec75; --color-muted: #a4a6b0; }
+@layer base { * { box-sizing: border-box; } html { scroll-behavior: smooth; } body { @apply m-0 min-w-80 bg-moss font-body text-ink; background-image: radial-gradient(ellipse at 12% 10%, rgba(182,236,117,.055), transparent 32%), #101116; } h1, h2, h3 { @apply font-display font-bold; } button, input, select { font: inherit; } button { cursor: pointer; } del { opacity: .62; text-decoration-thickness: 2px; } }
 
 @layer components {
   article b:has(> img) { display: block; width: 100%; height: 100%; rotate: none !important; transform: none !important; }
 }
 
 @layer utilities {
-  .bg-emerald-950, .bg-emerald-950\/90, .bg-emerald-950\/50, .bg-emerald-950\/40, .bg-emerald-950\/35 { background-color: #1b102b !important; }
-  .from-emerald-700 { --tw-gradient-from: #4c1d95 var(--tw-gradient-from-position); --tw-gradient-to: rgb(76 29 149 / 0) var(--tw-gradient-to-position); }
-  .via-emerald-950 { --tw-gradient-to: rgb(27 16 43 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), #1b102b var(--tw-gradient-via-position), var(--tw-gradient-to); }
-  .text-emerald-100 { color: #eadcff !important; }
-  .text-lime-900 { color: #581c87 !important; }
-  .bg-lime:hover, .border-lime:hover { box-shadow: 0 0 22px rgba(192, 132, 252, .45); }
+  .bg-emerald-950, .bg-emerald-950\/90, .bg-emerald-950\/50, .bg-emerald-950\/40, .bg-emerald-950\/35 { background-color: #1b1c22 !important; }
+  .from-emerald-700 { --tw-gradient-from: #303239 var(--tw-gradient-from-position); --tw-gradient-to: rgb(48 50 57 / 0) var(--tw-gradient-to-position); }
+  .via-emerald-950 { --tw-gradient-to: rgb(27 28 34 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), #1b1c22 var(--tw-gradient-via-position), var(--tw-gradient-to); }
+  .text-emerald-100 { color: #d6d7dc !important; }
+  .text-lime-900 { color: #34491d !important; }
+  .bg-lime:hover, .border-lime:hover { box-shadow: 0 0 22px rgba(182, 236, 117, .3); }
 }

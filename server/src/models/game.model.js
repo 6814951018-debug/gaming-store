@@ -14,8 +14,6 @@ const gameSchema = new mongoose.Schema(
         gameplayDescription: { type: String, trim: true, maxlength: 2000, default: "" },
         storyHighlights: { type: String, trim: true, maxlength: 2000, default: "" },
         mediaUrl: { type: String, trim: true, default: "" },
-        previewUrl: { type: String, trim: true, default: "" },
-        previewPoster: { type: String, trim: true, default: "" },
         maturityWarning: { type: String, trim: true, maxlength: 500, default: "" },
         systemRequirements: {
             minimum: {

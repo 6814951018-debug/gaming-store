@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 const Game = require("../models/game.model");
+const publicGame = game => {
+    const value = game.toObject ? game.toObject() : { ...game };
+    delete value.keyInventory;
+    delete value.downloadUrl;
+    return value;
+};
 
 const forzaCoverSvg = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600">
@@ -428,7 +434,7 @@ const getGames = async (req, res, next) => {
         const { platform, tag, minPrice, maxPrice, sale, ranking, search } = req.query;
         if (!isDatabaseReady()) {
             const games = getFallbackGames({ platform, tag, minPrice, maxPrice, sale, ranking, search });
-            return res.json(games);
+            return res.json(games.map(publicGame));
         }
 
         const filter = {};
@@ -465,14 +471,14 @@ const getGames = async (req, res, next) => {
             && (!tag || fallbackSpiderMan.tags.includes(tag))
             && ranking !== "upcoming"
             && !games.some((game) => game.title.toLowerCase() === "marvel’s spider-man remastered");
-        if (!includeRequiem && !includeHogwarts && !includeSilentHill2 && !includeRedDead && !includeSpiderMan) return res.json(games);
+        if (!includeRequiem && !includeHogwarts && !includeSilentHill2 && !includeRedDead && !includeSpiderMan) return res.json(games.map(publicGame));
         const additions = [];
         if (includeRequiem) additions.push(await ensureResidentEvilInDatabase());
         if (includeHogwarts) additions.push(await ensureHogwartsLegacyInDatabase());
         if (includeSilentHill2) additions.push(await ensureSilentHill2InDatabase());
         if (includeRedDead) additions.push(await ensureRedDeadRedemption2InDatabase());
         if (includeSpiderMan) additions.push(await ensureSpiderManRemasteredInDatabase());
-        res.json([...games, ...additions]);
+        res.json([...games, ...additions].map(publicGame));
     } catch (error) { next(error); }
 };
 
@@ -481,7 +487,7 @@ const getGame = async (req, res, next) => {
         if (!isDatabaseReady()) {
             const game = getFallbackGames({}).find((item) => item._id === req.params.id);
             if (!game) return res.status(404).json({ message: "Game not found" });
-            return res.json(game);
+            return res.json(publicGame(game));
         }
 
         const game = req.params.id === "resident-evil-requiem"
@@ -496,7 +502,7 @@ const getGame = async (req, res, next) => {
                             ? await ensureSpiderManRemasteredInDatabase()
                 : await Game.findById(req.params.id);
         if (!game) return res.status(404).json({ message: "Game not found" });
-        res.json(game);
+        res.json(publicGame(game));
     } catch (error) { next(error); }
 };
 
@@ -526,4 +532,11 @@ const deleteGame = async (req, res, next) => {
     } catch (error) { next(error); }
 };
 
-module.exports = { getGames, getGame, createGame, updateGame, deleteGame, getFallbackGames };
+const getAdminGames = async (req, res, next) => {
+    try {
+        const games = isDatabaseReady() ? await Game.find().select("-keyInventory").sort({ featured: -1, createdAt: -1 }) : getFallbackGames({});
+        res.json(games);
+    } catch (error) { next(error); }
+};
+
+module.exports = { getGames, getAdminGames, getGame, createGame, updateGame, deleteGame, getFallbackGames };

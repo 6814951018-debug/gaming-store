@@ -1,5 +1,4 @@
 const crypto = require("crypto");
-const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user.model");
@@ -8,14 +7,13 @@ const Order = require("../models/order.model");
 
 const paymentMethods = ["wallet", "promptpay", "card", "truemoney", "mobile-banking"];
 const makeOrderNumber = () => `GG-${Date.now().toString(36).toUpperCase()}-${crypto.randomBytes(2).toString("hex").toUpperCase()}`;
-const makeKey = () => `GG-${crypto.randomBytes(4).toString("hex").toUpperCase()}-${crypto.randomBytes(4).toString("hex").toUpperCase()}-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
 const publicAccount = user => ({ name: user.name, email: user.email, walletBalance: user.walletBalance, twoFactorEnabled: user.twoFactor?.enabled || false });
 
 const getAccount = async (req, res, next) => {
     try {
         const [user, orders] = await Promise.all([
             User.findById(req.user._id).select("name email walletBalance twoFactor"),
-            Order.find({ user: req.user._id }).sort({ createdAt: -1 }).populate("items.game", "title imageUrl"),
+            Order.find({ user: req.user._id }).sort({ createdAt: -1 }).populate("items.game", "title imageUrl downloadUrl platforms"),
         ]);
         res.json({ account: publicAccount(user), orders });
     } catch (error) { next(error); }
@@ -36,7 +34,7 @@ const createOrder = async (req, res, next) => {
             order.paymentStatus = "paid";
             order.status = "COMPLETED";
             order.paidAt = new Date();
-            order.items[0].key = game.keyInventory.shift() || makeKey();
+            order.items[0].key = game.keyInventory.shift() || "";
             order.deliveryStatus = "delivered";
             order.deliveredAt = new Date();
             game.unitsSold += 1;
@@ -48,35 +46,46 @@ const createOrder = async (req, res, next) => {
 };
 
 const checkoutCart = async (req, res, next) => {
-    let session;
     try {
-        const { gameIds, paymentMethod } = req.body;
+        const { gameIds, paymentMethod, edition = "standard" } = req.body;
         if (!Array.isArray(gameIds) || gameIds.length === 0 || gameIds.length > 50 || gameIds.some(id => typeof id !== "string") || new Set(gameIds).size !== gameIds.length) {
             return res.status(400).json({ message: "Choose one or more valid games to checkout" });
         }
         if (!paymentMethods.includes(paymentMethod)) return res.status(400).json({ message: "Choose a valid payment method" });
+        const isDemo = process.env.NODE_ENV !== "production";
+        if (!isDemo && paymentMethod !== "wallet") return res.status(403).json({ message: "Only Store wallet checkout is available until a payment provider is configured." });
+        if (!new Set(["standard", "deluxe", "bundle"]).has(edition) || (edition !== "standard" && gameIds.length !== 1)) return res.status(400).json({ message: "Choose a valid game edition" });
 
-        session = await mongoose.startSession();
-        let outcome;
-        await session.withTransaction(async () => {
-            const user = await User.findById(req.user._id).session(session);
-            const games = await Game.find({ _id: { $in: gameIds } }).session(session);
-            if (!user) { outcome = { status: 404, body: { message: "Account not found" } }; return; }
-            if (games.length !== gameIds.length) { outcome = { status: 404, body: { message: "One or more games are no longer available" } }; return; }
+        const userExists = await User.exists({ _id: req.user._id });
+        if (!userExists) return res.status(404).json({ message: "Account not found" });
+        const games = await Game.find({ _id: { $in: gameIds } });
+        if (games.length !== gameIds.length) return res.status(404).json({ message: "One or more games are no longer available" });
+        const existingOrder = await Order.exists({ user: req.user._id, paymentStatus: "paid", "items.game": { $in: gameIds } });
+        if (existingOrder) return res.status(409).json({ message: "Your library already contains one or more of these games" });
 
-            const gamesById = new Map(games.map(game => [String(game._id), game]));
-            const orderedGames = gameIds.map(id => gamesById.get(id));
-            const items = orderedGames.map(game => ({
-                game: game._id,
-                title: game.title,
-                price: Number((game.price * (1 - Number(game.salePercent || 0) / 100)).toFixed(2)),
-                key: game.keyInventory.shift() || makeKey(),
-            }));
-            const total = Number(items.reduce((sum, item) => sum + item.price, 0).toFixed(2));
+        const gamesById = new Map(games.map(game => [String(game._id), game]));
+        const orderedGames = gameIds.map(id => gamesById.get(id));
+        const editionExtra = edition === "deluxe" ? 12.99 : edition === "bundle" ? 24.99 : 0;
+        const items = orderedGames.map(game => ({
+            game: game._id,
+            title: game.title,
+            edition: gameIds.length === 1 ? edition : "standard",
+            price: Number((game.price * (1 - Number(game.salePercent || 0) / 100) + editionExtra).toFixed(2)),
+            key: "",
+        }));
+        const total = Number(items.reduce((sum, item) => sum + item.price, 0).toFixed(2));
+        const user = isDemo
+            ? await User.findById(req.user._id)
+            : await User.findOneAndUpdate(
+                { _id: req.user._id, walletBalance: { $gte: total } },
+                { $inc: { walletBalance: -total } },
+                { new: true }
+            );
+        if (!user) return res.status(isDemo ? 404 : 400).json({ message: isDemo ? "Account not found" : "Insufficient wallet balance. Add funds to your Store wallet first." });
+
+        try {
             const completedAt = new Date();
-            for (const game of orderedGames) game.unitsSold += 1;
-
-            const order = new Order({
+            const order = await Order.create({
                 orderNumber: makeOrderNumber(),
                 user: user._id,
                 items,
@@ -88,13 +97,13 @@ const checkoutCart = async (req, res, next) => {
                 paidAt: completedAt,
                 deliveredAt: completedAt,
             });
-            for (const game of orderedGames) await game.save({ session });
-            await order.save({ session });
-            outcome = { status: 201, body: { order, account: publicAccount(user), message: "Checkout completed. Your game keys are ready." } };
-        });
-        res.status(outcome.status).json(outcome.body);
+            await Game.updateMany({ _id: { $in: gameIds } }, { $inc: { unitsSold: 1 } });
+            return res.status(201).json({ order, account: publicAccount(user), simulated: isDemo, message: isDemo ? "Demo checkout complete. No payment was charged." : "Purchase complete. Your game is in your library." });
+        } catch (error) {
+            if (!isDemo) await User.updateOne({ _id: user._id }, { $inc: { walletBalance: total } });
+            throw error;
+        }
     } catch (error) { next(error); }
-    finally { if (session) await session.endSession(); }
 };
 
 const simulateOrderPayment = async (req, res, next) => {
@@ -107,7 +116,7 @@ const simulateOrderPayment = async (req, res, next) => {
         for (const item of order.items) {
             const game = await Game.findById(item.game);
             if (!game) return res.status(404).json({ message: `Game not found: ${item.title}` });
-            item.key = game.keyInventory.shift() || makeKey();
+            item.key = game.keyInventory.shift() || "";
             game.unitsSold += 1;
             games.push(game);
         }

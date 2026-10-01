@@ -50,6 +50,12 @@ const gameSchema = new mongoose.Schema(
             social: { type: String, trim: true, default: "" },
         },
         imageUrl: { type: String, trim: true, default: "" },
+        downloadUrl: {
+            type: String,
+            trim: true,
+            default: "",
+            validate: { validator: value => !value || /^https?:\/\//i.test(value), message: "Download URL must use HTTP or HTTPS" },
+        },
         featured: { type: Boolean, default: false },
         platforms: { type: [String], default: ["PC"] },
         tags: { type: [String], default: [] },

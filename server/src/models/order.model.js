@@ -7,6 +7,7 @@ const orderSchema = new mongoose.Schema(
         items: [{
             game: { type: mongoose.Schema.Types.ObjectId, ref: "Game", required: true },
             title: { type: String, required: true },
+            edition: { type: String, default: "standard" },
             price: { type: Number, required: true, min: 0 },
             key: { type: String, default: "" },
         }],

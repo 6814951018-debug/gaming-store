@@ -424,7 +424,8 @@ function AccountV2({ user, mode, setMode, setUser, navigate, logout, refreshKey 
     try {
       const data = Object.fromEntries(new FormData(event.currentTarget));
       const response = await fetch(`${API_URL}/auth/${mode}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
-      const result = await response.json();
+      const result = await response.json().catch(() => null);
+      if (!result) throw new Error(`The server returned an invalid response (${response.status}). Please try again later.`);
       if (!response.ok) throw new Error(result.message || "Something went wrong");
       if (result.requiresTwoFactor) { setChallengeToken(result.challengeToken); setDevelopmentOtp(result.developmentOtp || ""); setMessage("Enter the one-time code sent to your email."); }
       else { localStorage.setItem("portable_track_token", result.token); setUser(result.user); }
